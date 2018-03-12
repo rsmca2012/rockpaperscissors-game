@@ -29,3 +29,25 @@ To run the program following steps needs to be done
    java -jar rps-demo-0.0.2-SNAPSHOT.jar
 
 The results will be shown accordingly based on the logic Player A always chooses Paper and Player B Chooses randomly.
+
+
+Short Description on various classes
+*****************************************
+com.tyntec.rps.RockPaperScissorsSimulator is the main class in this maven project
+Game is the class which contains the game related conditions and for player instantiations
+Player is the class which has various attributes related to the player who plays the game
+RockPaperScissorsConstants is the class which contains the probable player choices and the results
+
+Advantages :
+There is no big deal with design here..it is a simple pojo used here in RockPaperScissorsSimulator which is the main class
+Enumeration is used in the RockPaperScissorsConstants in order to get the playerChoices and the results very quickly
+
+Tests
+*********
+Class Game is tested with various possibilities as you can see the same from TestUnitGame.java
+Used Junit4 for testing all the relevant cases for the game
+
+
+
+
+
