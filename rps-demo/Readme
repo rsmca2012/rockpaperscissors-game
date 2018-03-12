@@ -1,0 +1,31 @@
+This is a simulation of Rock paper scissors game
+
+The java program is developed in such a way to satisfy the following conditions
+
+Build a game in which two players compete in a game of Rock-Paper-Scissors with different
+strategies. Who will win more rounds? The rules:
+ Scissors beats Paper
+ Rock beat Scissors
+ Paper beats Rock
+ If both players choose the same, the round is counted as a tie.
+Implement two players:
+ Player A always chooses Paper
+ Player B chooses randomly
+The game consists of 100 rounds of above two players competing. The output of the program
+should be like the following:
+"Player A wins 31 of 100 games"
+"Player B wins 37 of 100 games"
+"Tie: 32 of 100 games"
+
+
+To run the program following steps needs to be done
+
+1. Download the jar file rps-demo-0.0.2-SNAPSHOT.jar
+2. Make sure that java 8 is installed in your system
+3. Make sure that JAVA_HOME is set
+4. then open the command line
+5. Go to the folder where you have downloaded the jar file
+6. Then execute the below command
+   java -jar rps-demo-0.0.2-SNAPSHOT.jar
+
+The results will be shown accordingly based on the logic Player A always chooses Paper and Player B Chooses randomly.
