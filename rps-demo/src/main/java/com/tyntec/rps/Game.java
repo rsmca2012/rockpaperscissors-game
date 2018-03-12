@@ -6,7 +6,10 @@ import static com.tyntec.rps.Constants.RockPaperScissorsConstants.RESULT.LOSE;
 import static com.tyntec.rps.Constants.RockPaperScissorsConstants.RESULT.TIE;
 import static com.tyntec.rps.Constants.RockPaperScissorsConstants.RESULT.WIN;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.lang.UnsupportedOperationException;
 
 import com.tyntec.rps.Constants.RockPaperScissorsConstants.PLAYERCHOICES;
 import com.tyntec.rps.Constants.RockPaperScissorsConstants.RESULT;
@@ -16,7 +19,9 @@ public class Game  {
 	private int numberOfGames;
 	private int numberOfPlayers;
 	private int tieCount;
-
+	private Player playerA;
+	private Player playerB;
+	
 	public int getTieCount() {
 		return tieCount;
 	}
@@ -25,7 +30,7 @@ public class Game  {
 		this.tieCount = tieCount;
 	}
 
-	private Player playerA;
+
 	public Player getPlayerA() {
 		return playerA;
 	}
@@ -41,8 +46,6 @@ public class Game  {
 	public void setPlayerB(Player playerB) {
 		this.playerB = playerB;
 	}
-
-	private Player playerB;
 
 	public Game() {
 		this(MAXIMUM_ALLOWED_PLAYERS, MAXIMUM_ALLOWED_MOVES);
@@ -61,6 +64,14 @@ public class Game  {
 		if (numberOfGames > MAXIMUM_ALLOWED_MOVES || numberOfGames <= 0)
 			throw new IllegalArgumentException("Game cannot be played as allowed moves are not fitting to the game conditions");
 
+	}
+	
+	void ensureThatPlayerChoicesAreCorrectlySet(PLAYERCHOICES playerChoiceA, PLAYERCHOICES playerChoiceB) throws UnsupportedOperationException{
+		List<PLAYERCHOICES> choices = Arrays.asList(PLAYERCHOICES.values());
+
+		 if (playerChoiceA == null || playerChoiceB == null || (playerChoiceA!=null && !choices.contains(playerChoiceA)) || (playerChoiceB!=null && !choices.contains(playerChoiceB)) ) {
+			 throw new UnsupportedOperationException(String.format("Player Choices are not Set correctly . Player 1 Choice %s Player 2 Choice %s", playerChoiceA, playerChoiceB));
+		 }
 	}
 
 	void validatePlayerData() {
@@ -106,7 +117,7 @@ public class Game  {
 		return PLAYERCHOICES.values()[new Random().nextInt(PLAYERCHOICES.values().length)];
 	}
 
-	public void playRockPaperScissors() {
+	public void playRockPaperScissors() throws UnsupportedOperationException {
 
 		for (int i = 0; i < numberOfGames; i++) {
 			manipulateGameResults(getPlayerChoice(playerA), getPlayerChoice(playerB));
@@ -118,7 +129,8 @@ public class Game  {
 		return !isNullOrEmpty(player.getSelectedChoice()) ? player.getSelectedChoice() : getRandomizedChoice();
 	}
 
-	void manipulateGameResults(PLAYERCHOICES choicePlayerA, PLAYERCHOICES choicePlayerB) {
+	void manipulateGameResults(PLAYERCHOICES choicePlayerA, PLAYERCHOICES choicePlayerB) throws UnsupportedOperationException {
+		ensureThatPlayerChoicesAreCorrectlySet(choicePlayerA, choicePlayerB);
 		RESULT result = (choicePlayerA == choicePlayerB) ? TIE : (choicePlayerA.succeeds(choicePlayerB) ? WIN : LOSE);
 
 		setTieCount(result == TIE ? tieCount + 1 : tieCount);
@@ -128,10 +140,8 @@ public class Game  {
 	}
 
 	void printGameResults() {
-		System.out.println(
-				playerA.getPlayerName() + " wins " + playerA.getWinCount() + " of " + numberOfGames + " GAMES");
-		System.out.println(
-				playerB.getPlayerName() + " wins " + playerB.getWinCount() + " of " + numberOfGames + " GAMES");
+		System.out.println(playerA.getPlayerName() + " wins " + playerA.getWinCount() + " of " + numberOfGames + " GAMES");
+		System.out.println(playerB.getPlayerName() + " wins " + playerB.getWinCount() + " of " + numberOfGames + " GAMES");
 		System.out.println("Tie " + tieCount + " of " + numberOfGames + " GAMES");
 	}
 

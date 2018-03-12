@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tyntec.rps</groupId>
   <artifactId>rps-demo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>
@@ -15,11 +15,23 @@
   		<artifactId>mockito-all</artifactId>
   		<version>1.10.19</version>
   	</dependency>
-  	<dependency>
-  		<groupId>org.powermock</groupId>
-  		<artifactId>powermock</artifactId>
-  		<version>1.6.6</version>
-  		<type>pom</type>
-  	</dependency>
   </dependencies>
+  
+  <build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+						<addClasspath>true</addClasspath>
+							<mainClass>com.tyntec.rps.RockPaperScissorsSimulator</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+  
 </project>

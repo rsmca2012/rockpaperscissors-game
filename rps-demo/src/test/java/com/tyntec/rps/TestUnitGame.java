@@ -5,8 +5,6 @@ import static com.tyntec.rps.Constants.RockPaperScissorsConstants.MAXIMUM_ALLOWE
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 import com.tyntec.rps.Constants.RockPaperScissorsConstants.PLAYERCHOICES;
 import com.tyntec.rps.Constants.RockPaperScissorsConstants.RESULT;
@@ -26,12 +24,6 @@ public class TestUnitGame {
 
 		assertNull(game.getPlayerA().getSelectedChoice());
 		assertNull(game.getPlayerB().getSelectedChoice());
-
-	}
-	
-	@Test
-	public void testGame_VerifyParameterizedConstructorsCalled_WhenDefaultConstructorIsCalled() {
-		Powermockito
 
 	}
 
@@ -97,6 +89,26 @@ public class TestUnitGame {
 	}
 
 	@Test
+	public void testEnsureThatPlayerChoicesAreCorrectlySet() throws Exception {
+		ensureThatPlayerChoicesAreCorrectlySetTest(true, null, null);
+		ensureThatPlayerChoicesAreCorrectlySetTest(true, PLAYERCHOICES.PAPER, null);
+		ensureThatPlayerChoicesAreCorrectlySetTest(true, null, PLAYERCHOICES.ROCK);
+
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.PAPER, PLAYERCHOICES.PAPER);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.ROCK, PLAYERCHOICES.ROCK);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.SCISSORS);
+
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.PAPER);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.PAPER, PLAYERCHOICES.ROCK);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.ROCK, PLAYERCHOICES.SCISSORS);
+
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.PAPER, PLAYERCHOICES.SCISSORS);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.ROCK, PLAYERCHOICES.PAPER);
+		ensureThatPlayerChoicesAreCorrectlySetTest(false, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.ROCK);
+
+	}
+
+	@Test
 	public void testGetPlayerChoice() {
 		Game game = new Game(new Player(), new Player());
 		game.getPlayerA().setSelectedChoice(PLAYERCHOICES.PAPER);
@@ -114,42 +126,95 @@ public class TestUnitGame {
 				game.getPlayerChoice(game.getPlayerB()));
 
 	}
-	
+
 	@Test
-	public void testManipulateGameResults() {
-		
+	public void testManipulateGameResults() throws Exception {
 		manipulateGameResultsTest(RESULT.TIE, PLAYERCHOICES.PAPER, PLAYERCHOICES.PAPER);
 		manipulateGameResultsTest(RESULT.TIE, PLAYERCHOICES.ROCK, PLAYERCHOICES.ROCK);
 		manipulateGameResultsTest(RESULT.TIE, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.SCISSORS);
-		
+
 		manipulateGameResultsTest(RESULT.WIN, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.PAPER);
 		manipulateGameResultsTest(RESULT.WIN, PLAYERCHOICES.PAPER, PLAYERCHOICES.ROCK);
 		manipulateGameResultsTest(RESULT.WIN, PLAYERCHOICES.ROCK, PLAYERCHOICES.SCISSORS);
-		
+
 		manipulateGameResultsTest(RESULT.LOSE, PLAYERCHOICES.PAPER, PLAYERCHOICES.SCISSORS);
 		manipulateGameResultsTest(RESULT.LOSE, PLAYERCHOICES.ROCK, PLAYERCHOICES.PAPER);
 		manipulateGameResultsTest(RESULT.LOSE, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.ROCK);
 
+		try {
+			manipulateGameResultsTest(RESULT.WIN, null, PLAYERCHOICES.ROCK);
+			fail("UnSupported Operation Exception expected");
+		} catch (Exception ex) {
+			assertTrue(ex instanceof UnsupportedOperationException);
+		}
+
 	}
-	
-	private void manipulateGameResultsTest(RESULT expectedResult, PLAYERCHOICES player1Choice, PLAYERCHOICES player2Choice) {
+
+	@Test
+	public void testPlayRockPaperScissors() throws Exception {
+
+		playRockPaperScissorsTest(RESULT.TIE, PLAYERCHOICES.PAPER, PLAYERCHOICES.PAPER);
+		playRockPaperScissorsTest(RESULT.TIE, PLAYERCHOICES.ROCK, PLAYERCHOICES.ROCK);
+		playRockPaperScissorsTest(RESULT.TIE, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.SCISSORS);
+
+		playRockPaperScissorsTest(RESULT.WIN, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.PAPER);
+		playRockPaperScissorsTest(RESULT.WIN, PLAYERCHOICES.PAPER, PLAYERCHOICES.ROCK);
+		playRockPaperScissorsTest(RESULT.WIN, PLAYERCHOICES.ROCK, PLAYERCHOICES.SCISSORS);
+
+		playRockPaperScissorsTest(RESULT.LOSE, PLAYERCHOICES.PAPER, PLAYERCHOICES.SCISSORS);
+		playRockPaperScissorsTest(RESULT.LOSE, PLAYERCHOICES.ROCK, PLAYERCHOICES.PAPER);
+		playRockPaperScissorsTest(RESULT.LOSE, PLAYERCHOICES.SCISSORS, PLAYERCHOICES.ROCK);
+
+	}
+
+	private void playRockPaperScissorsTest(RESULT expectedResult, PLAYERCHOICES player1Choice,
+			PLAYERCHOICES player2Choice) throws Exception {
 		Game game = new Game();
-		game.manipulateGameResults(player1Choice, player2Choice);
-		
+		game.setNumberOfGames(1);
+		game.setNumberOfPlayers(2);
+
+		assertNotNull(game.getPlayerA());
+		assertNotNull(game.getPlayerB());
+
+		game.getPlayerA().setSelectedChoice(player1Choice);
+		game.getPlayerB().setSelectedChoice(player2Choice);
+
+		game.playRockPaperScissors();
+
 		if (expectedResult == RESULT.WIN) {
 			assertEquals(1, game.getPlayerA().getWinCount());
 			assertEquals(0, game.getPlayerB().getWinCount());
 			assertEquals(0, game.getTieCount());
-		} else if(expectedResult == RESULT.LOSE) {
+		} else if (expectedResult == RESULT.LOSE) {
 			assertEquals(0, game.getPlayerA().getWinCount());
 			assertEquals(1, game.getPlayerB().getWinCount());
 			assertEquals(0, game.getTieCount());
 		} else {
 			assertEquals(0, game.getPlayerA().getWinCount());
 			assertEquals(0, game.getPlayerB().getWinCount());
-			assertEquals(1, game.getTieCount());	
+			assertEquals(1, game.getTieCount());
 		}
-		
+	}
+
+	private void manipulateGameResultsTest(RESULT expectedResult, PLAYERCHOICES player1Choice,
+			PLAYERCHOICES player2Choice) {
+		Game game = new Game();
+		game.manipulateGameResults(player1Choice, player2Choice);
+
+		if (expectedResult == RESULT.WIN) {
+			assertEquals(1, game.getPlayerA().getWinCount());
+			assertEquals(0, game.getPlayerB().getWinCount());
+			assertEquals(0, game.getTieCount());
+		} else if (expectedResult == RESULT.LOSE) {
+			assertEquals(0, game.getPlayerA().getWinCount());
+			assertEquals(1, game.getPlayerB().getWinCount());
+			assertEquals(0, game.getTieCount());
+		} else {
+			assertEquals(0, game.getPlayerA().getWinCount());
+			assertEquals(0, game.getPlayerB().getWinCount());
+			assertEquals(1, game.getTieCount());
+		}
+
 	}
 
 	private void validatePlayerDataTest(Game game, boolean isIllegalArgumentExceptionExpected) {
@@ -176,6 +241,30 @@ public class TestUnitGame {
 		} catch (IllegalArgumentException ex) {
 			if (!isIllegalArgumentExceptionExpected) {
 				fail("Illegal Argument Exception not expected");
+			}
+		}
+
+	}
+
+	private void ensureThatPlayerChoicesAreCorrectlySetTest(boolean isExceptionExpected, PLAYERCHOICES player1Choice,
+			PLAYERCHOICES player2Choice) throws Exception {
+		Game game = new Game();
+
+		assertNotNull(game.getPlayerA());
+		assertNotNull(game.getPlayerB());
+
+		game.getPlayerA().setSelectedChoice(player1Choice);
+		game.getPlayerB().setSelectedChoice(player2Choice);
+
+		try {
+			game.ensureThatPlayerChoicesAreCorrectlySet(player1Choice, player2Choice);
+			if (isExceptionExpected) {
+				fail("Unsupported Operation Exception Expected");
+			}
+
+		} catch (UnsupportedOperationException ex) {
+			if (!isExceptionExpected) {
+				fail("Unsupported Operation Expection Not Expected");
 			}
 		}
 
